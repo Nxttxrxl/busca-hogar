@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import About from "./components/About";
 import Resultados from "./components/Resultados";
 import Colabora from "./components/Colabora";
+import Mapa from "./components/Mapa";
 
 const App: React.FC = () => {
   return (
@@ -19,8 +20,9 @@ const App: React.FC = () => {
             <Route path="/resultados" element={<Resultados />} />
           </Routes>
 
-          <main className="flex flex-1 justify-center items-start">
+          <main className="flex flex-col items-center"> {/* Changed from flex-1 to flex-col */}
             <Filtros />
+            <Mapa />
           </main>
           <Footer />
         </div>
