@@ -7,16 +7,16 @@ type Coordinates = [number, number];
 const Mapa: React.FC = () => {
   
   const [polygonCoords] = useState<Coordinates[]>([
-    [40.96548, -5.66443],
-    [40.96527, -5.66338],
-    [40.96451, -5.66373],
-    [40.9647, -5.66468]
+    [41.141206, 1.046194],
+    [41.143701, 1.042853],
+    [41.141594, 1.042609],
+    [41.141444, 1.044138]
   ]);
 
   return (
     <div className='w-full mt-5 justify-center items-center'>
         <h1 className='text-4xl font-bold mb-2'>Mapa de refugios</h1>
-    <MapContainer center={[40.965, -5.664]} zoom={5} style={{ height: '400px', width: '100%' }}>
+    <MapContainer center={[40.415347, -3.707371]} zoom={5} style={{ height: '400px', width: '100%' }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; OpenStreetMap contributors'
