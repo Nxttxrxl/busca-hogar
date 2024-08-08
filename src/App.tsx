@@ -16,7 +16,7 @@ const App: React.FC = () => {
         <Route path="/about" element={<About />} />
       </Routes>
       
-      <main className="flex flex-1 justify-center items-start">
+      <main className="flex-grow flex-1 justify-center items-start">
         <Filtros />
       </main>
 
