@@ -10,7 +10,7 @@ const About: React.FC = () => {
         que cuidan a estos animales. Nuestro objetivo es proporcionar una plataforma fácil de
         usar para que más animales encuentren un hogar amoroso.
       </p>
-    </div>
+    </div>  
   );
 };
 

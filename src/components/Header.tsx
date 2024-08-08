@@ -18,7 +18,7 @@ const Header: React.FC = () => {
         <div className="flex space-x-4">
           <Link to="/" className="hover:text-gray-500">Inicio</Link>
           <Link to="/about" className="hover:text-gray-500">Sobre Nosotros</Link>
-          <a href="#services" className="hover:text-gray-500">Colabora</a>
+          <Link to="/colabora" className="hover:text-gray-500">Colabora</Link>
           <a href="#contact" className="hover:text-gray-500">Contacto</a>
         </div>
       </div>
