@@ -21,6 +21,17 @@ const App: React.FC = () => {
           <main className="flex flex-1 justify-center items-start">
             <Filtros />
           </main>
+    <div className="min-h-screen flex flex-col bg-gray-100 items-center">
+      <div className='w-[1200px] bg-white'>
+
+      <Header />
+      <Routes>
+        <Route path="/about" element={<About />} />
+      </Routes>
+      
+      <main className="flex-grow flex-1 justify-center items-start">
+        <Filtros />
+      </main>
 
           <Footer />
         </div>
