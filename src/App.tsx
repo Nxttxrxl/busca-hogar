@@ -4,6 +4,7 @@ import Filtros from './components/Filtros';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import About from './components/About';
+import Resultados from './components/Resultados';
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FC = () => {
       <Header />
       <Routes>
         <Route path="/about" element={<About />} />
+        <Route path="/resultados" element={<Resultados />} />
       </Routes>
       
       <main className="flex-grow flex-1 justify-center items-start">
