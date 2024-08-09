@@ -9,17 +9,20 @@ import Home from "./pages/Home";
 const App: React.FC = () => {
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/colabora" element={<Colabora />} />
-          <Route path="/resultados" element={<Resultados />} />
-        </Routes>
-      </Layout>
+      <div className="flex justify-center">
+        <div className="w-[1200px]">
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/colabora" element={<Colabora />} />
+              <Route path="/resultados" element={<Resultados />} />
+            </Routes>
+          </Layout>
+        </div>
+      </div>
     </Router>
   );
 };
 
 export default App;
-
