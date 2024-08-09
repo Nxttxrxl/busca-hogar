@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import About from "./pages/About";
 import Resultados from "./pages/Resultados";
-import Colabora from "./components/Colabora";
+import Colabora from "./pages/Colabora";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 
