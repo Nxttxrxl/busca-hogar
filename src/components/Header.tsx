@@ -31,20 +31,19 @@ const Header: React.FC = () => {
 
       <div className="flex items-center space-x-2">
 
-        {/* Search bar */}
         <SearchBar onSearch={handleSearch} />
 
 
         <div className="flex space-x-2">
           <Link
             to="/signin"
-            className="p-1 text-xs bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            className="p-1 text-sm bg-gray-700 text-white rounded-lg hover:bg-gray-800"
           >
             Log In
           </Link>
           <Link
             to="/signup"
-            className="p-1 text-xs bg-green-500 text-white rounded-lg hover:bg-green-600"
+            className="p-1 text-sm bg-gray-700 text-white rounded-lg hover:bg-gray-800"
           >
             Sign In
           </Link>
