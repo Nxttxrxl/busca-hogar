@@ -1,7 +1,7 @@
 import React from "react";
 const Colabora: React.FC = () => {
   return (
-    <div className="p-8 bg-white shadow-md rounded-lg max-w-4xl mx-auto mt-10">
+    <div className="p-8 w-full rounded-lg mx-auto mt-10">
       {" "}
       <h2 className="text-3xl font-bold text-center text-black-600 mb-6">
         ¡Colabora con Nosotros!
