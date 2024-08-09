@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar";
 
@@ -30,7 +30,10 @@ const Header: React.FC = () => {
       </div>
 
       <div className="flex items-center space-x-2">
+
+        {/* Search bar */}
         <SearchBar onSearch={handleSearch} />
+
 
         <div className="flex space-x-2">
           <Link

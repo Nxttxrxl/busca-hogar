@@ -15,16 +15,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     };
 
     return (
-<form onSubmit={handleSearch} style={{ display: 'flex', alignItems: 'center' }}>
+<form onSubmit={handleSearch} className="flex items-center space-x-1">
             <input
                 type="text"
                 value={query}
                 onChange={handleInputChange}
                 placeholder="Buscar..."
-                style={{
-                    
-                }}/>
+                className="p-1 text-sm border border-gray-300 rounded-lg"
+                />
             <button
+                className="p-1 text-sm bg-gray-700 text-white rounded-lg hover:bg-gray-800"
                 type="submit"
                 style={{
 
