@@ -40,7 +40,7 @@ const About: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <img 
               src="https://via.placeholder.com/150" 
-              alt="Andreii" 
+              alt="Rafel" 
               className="w-24 h-24 rounded-full mx-auto mb-4"
             />
             <h4 className="text-xl font-semibold">Rafel</h4>
@@ -54,7 +54,7 @@ const About: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <img 
               src="https://via.placeholder.com/150" 
-              alt="Mihail" 
+              alt="Anouar" 
               className="w-24 h-24 rounded-full mx-auto mb-4"
             />
             <h4 className="text-xl font-semibold">Anouar</h4>
@@ -68,13 +68,13 @@ const About: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <img 
               src="https://via.placeholder.com/150" 
-              alt="Rafel" 
+              alt="Andrei" 
               className="w-24 h-24 rounded-full mx-auto mb-4"
             />
-            <h4 className="text-xl font-semibold">ANdreii</h4>
+            <h4 className="text-xl font-semibold">Andrei</h4>
             <p className="text-gray-600">Backend Developer</p>
             <p className="mt-2">
-              Andreii es nuestro desarrollador backend, especializado en la creación y mantenimiento de servicios robustos y eficientes. Su experiencia asegura que nuestros sistemas sean seguros y escalables.
+              Andrei es nuestro desarrollador backend, especializado en la creación y mantenimiento de servicios robustos y eficientes. Su experiencia asegura que nuestros sistemas sean seguros y escalables.
             </p>
           </div>
 
@@ -82,7 +82,7 @@ const About: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <img 
               src="https://via.placeholder.com/150" 
-              alt="Anouar" 
+              alt="Mihail" 
               className="w-24 h-24 rounded-full mx-auto mb-4"
             />
             <h4 className="text-xl font-semibold">Mihail</h4>

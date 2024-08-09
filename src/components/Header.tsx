@@ -1,3 +1,59 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import SearchBar from "./SearchBar";
+
+const Header: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleSearch = (query: string) => {
+    navigate(`/search?q=${query}`);
+  };
+
+  return (
+    <header className="text-black p-4 shadow-md flex justify-between items-center">
+      <div>
+        <h1 className="text-4xl font-bold mb-2">Hogar Animal</h1>
+        <div className="flex space-x-4">
+          <Link to="/" className="hover:text-gray-500">
+            Inicio
+          </Link>
+          <Link to="/about" className="hover:text-gray-500">
+            Sobre Nosotros
+          </Link>
+          <Link to="/colabora" className="hover:text-gray-500">
+            Colabora
+          </Link>
+          <a href="#contact" className="hover:text-gray-500">
+            Contacto
+          </a>
+        </div>
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <SearchBar onSearch={handleSearch} />
+
+        <div className="flex space-x-2">
+          <Link
+            to="/signin"
+            className="p-1 text-xs bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          >
+            Log In
+          </Link>
+          <Link
+            to="/signup"
+            className="p-1 text-xs bg-green-500 text-white rounded-lg hover:bg-green-600"
+          >
+            Sign In
+          </Link>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
+
+/*
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -59,3 +115,4 @@ const Header: React.FC = () => {
 };
 
 export default Header;
+*/
