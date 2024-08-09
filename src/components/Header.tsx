@@ -13,7 +13,7 @@ const Header: React.FC = () => {
   return (
     <header className="text-black p-4 shadow-md flex justify-between items-center">
       <div>
-        <h1 className="text-4xl font-bold mb-2">Hogar Animal</h1>
+        <img src="images/Logo.png" alt="Logo" />
         <div className="flex space-x-4">
           <Link to="/" className="hover:text-gray-500">Inicio</Link>
           <Link to="/about" className="hover:text-gray-500">Sobre Nosotros</Link>
