@@ -5,6 +5,7 @@ import Resultados from "./pages/Resultados";
 import Colabora from "./pages/Colabora";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
+import Authpage from "./pages/Authpage";
 
 const App: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const App: React.FC = () => {
               <Route path="/about" element={<About />} />
               <Route path="/colabora" element={<Colabora />} />
               <Route path="/resultados" element={<Resultados />} />
+              <Route path="/authpage" element={<Authpage />} />
             </Routes>
           </Layout>
         </div>
