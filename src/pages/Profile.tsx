@@ -20,7 +20,7 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-md m-5">
+    <div className=" w-full mx-auto p-6 bg-white shadow-md rounded-md m-5">
       <h1 className="text-3xl font-bold mb-6">Perfil</h1>
       
       <div className="flex items-center mb-6">
