@@ -6,6 +6,7 @@ import Colabora from "./pages/Colabora";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Authpage from "./pages/Authpage";
+import Profile from "./pages/Profile";
 
 const App: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ const App: React.FC = () => {
               <Route path="/colabora" element={<Colabora />} />
               <Route path="/resultados" element={<Resultados />} />
               <Route path="/authpage" element={<Authpage />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </Layout>
         </div>
