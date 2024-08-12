@@ -8,7 +8,7 @@ const Resultados: React.FC = () => {
 
   // Ejemplo de datos del animal (estos podrían venir de una API o de otra fuente)
   const animalData = {
-    photoUrl: 'https://via.placeholder.com/150', // URL de la foto del animal
+    photoUrl: 'https://via.placeholder.com/150', 
     species: 'Perro', // Especie del animal
     breed: 'Labrador', // Raza del animal
     age: '3 años', // Edad del animal
@@ -16,11 +16,9 @@ const Resultados: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full p-6">
+    <div className="w-full flex flex-col items-center p-6">
       <div className="w-full max-w-4xl p-6 bg-white shadow-md rounded-lg mb-6">
         <h1 className="text-2xl font-bold mb-4">Resultados de la búsqueda</h1>
-        <p><strong>Provincia:</strong> {provincia}</p>
-        <p><strong>Animal:</strong> {animal}</p>
       </div>
 
       {/* Tarjeta del Animal */}
@@ -40,7 +38,6 @@ const Resultados: React.FC = () => {
         </div>
       </div>
 
-      {/* Mapa */}
       <Mapa />
     </div>
   );
