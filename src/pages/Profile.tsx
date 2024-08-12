@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Register from "../components/Register";
 
 const Profile: React.FC = () => {
-  const [isRegistered, setIsRegistered] = useState(true); // ns esto true or false marca si esta registrado o no
+  const [isRegistered] = useState(false); // ns esto true or false marca si esta registrado o no
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [accountType, setAccountType] = useState("");
