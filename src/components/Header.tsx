@@ -12,7 +12,7 @@ const Header: React.FC = () => {
   return (
     <header className="text-black p-4 shadow-md flex justify-between items-center">
       <div>
-        <h1 className="text-4xl font-bold mb-2">Hogar Animal</h1>
+        <img src="./images/Logo.png" alt="" />
         <div className="flex space-x-4">
           <Link to="/" className="hover:text-gray-500">
             Inicio
@@ -38,11 +38,11 @@ const Header: React.FC = () => {
           >
             Log In
           </Link>
-          <Link to="/profile" className="p-1 text-gray-700 hover:text-gray-500">
+          <Link to="/profile" className="p-1 text-gray-700 hover:text-gray-500"> 
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zM12 14c-4.4 0-8 2.6-8 6v1h16v-1c0-3.4-3.6-6-8-6z"></path>
             </svg>
-          </Link>
+          </Link> 
         </div>
       </div>
     </header>
