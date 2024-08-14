@@ -7,6 +7,7 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Authpage from "./pages/Authpage";
 import Profile from "./pages/Profile";
+import "./App.css";
 
 const App: React.FC = () => {
   return (
