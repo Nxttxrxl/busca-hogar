@@ -11,6 +11,14 @@ const Profile: React.FC = () => {
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [shelterName, setShelterName] = useState("");
   const [availableDogs, setAvailableDogs] = useState<{ name: string; breed: string; age: string; description: string; photoUrl: string; }[]>([]);
+  const [isAddingDog, setIsAddingDog] = useState(false); // Controla si se está agregando un perro nuevo
+  const [newDog, setNewDog] = useState<{ name: string; breed: string; age: string; description: string; photoUrl: string; }>({
+    name: "",
+    breed: "",
+    age: "",
+    description: "",
+    photoUrl: ""
+  });
 
   const handleSave = () => {
     console.log({
@@ -23,6 +31,7 @@ const Profile: React.FC = () => {
       shelterName,
       availableDogs,
     });
+    // Aquí puedes agregar la lógica para guardar los datos en tu backend o estado global
   };
 
   const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,19 +41,26 @@ const Profile: React.FC = () => {
   };
 
   const handleAddDog = () => {
-    setAvailableDogs([...availableDogs, { name: "", breed: "", age: "", description: "", photoUrl: "" }]);
+    setIsAddingDog(true);
   };
 
-  const handleDogChange = (index: number, field: string, value: string) => {
-    const newDogs = [...availableDogs];
-    newDogs[index] = { ...newDogs[index], [field]: value };
-    setAvailableDogs(newDogs);
+  const handleCancelAddDog = () => {
+    setIsAddingDog(false);
+    setNewDog({ name: "", breed: "", age: "", description: "", photoUrl: "" });
   };
 
-  const handleDogPhotoChange = (index: number, file: File) => {
-    const newDogs = [...availableDogs];
-    newDogs[index] = { ...newDogs[index], photoUrl: URL.createObjectURL(file) };
-    setAvailableDogs(newDogs);
+  const handleSaveNewDog = () => {
+    setAvailableDogs([...availableDogs, newDog]);
+    setIsAddingDog(false);
+    setNewDog({ name: "", breed: "", age: "", description: "", photoUrl: "" });
+  };
+
+  const handleDogChange = (field: string, value: string) => {
+    setNewDog({ ...newDog, [field]: value });
+  };
+
+  const handleDogPhotoChange = (file: File) => {
+    setNewDog({ ...newDog, photoUrl: URL.createObjectURL(file) });
   };
 
   return (
@@ -97,7 +113,7 @@ const Profile: React.FC = () => {
                         type="file"
                         accept="image/*"
                         className="absolute inset-0 opacity-0 cursor-pointer"
-                        onChange={(e) => handleDogPhotoChange(index, e.target.files![0])}
+                        onChange={(e) => handleDogPhotoChange(e.target.files![0])}
                       />
                     </div>
                   </div>
@@ -131,12 +147,80 @@ const Profile: React.FC = () => {
                   />
                 </div>
               ))}
-              <button
-                onClick={handleAddDog}
-                className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 mb-4"
-              >
-                Añadir Nuevo Perro
-              </button>
+              {isAddingDog ? (
+                <>
+                  <div className="mb-4 p-4 border rounded-md">
+                    <input
+                      type="text"
+                      placeholder="Nombre"
+                      value={newDog.name}
+                      onChange={(e) => handleDogChange("name", e.target.value)}
+                      className="w-full p-2 mb-2 border rounded"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Raza"
+                      value={newDog.breed}
+                      onChange={(e) => handleDogChange("breed", e.target.value)}
+                      className="w-full p-2 mb-2 border rounded"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Edad"
+                      value={newDog.age}
+                      onChange={(e) => handleDogChange("age", e.target.value)}
+                      className="w-full p-2 mb-2 border rounded"
+                    />
+                    <textarea
+                      placeholder="Descripción"
+                      value={newDog.description}
+                      onChange={(e) => handleDogChange("description", e.target.value)}
+                      className="w-full p-2 mb-2 border rounded"
+                      rows={4}
+                    />
+                    <div className="relative w-24 h-24 bg-gray-200 rounded-full overflow-hidden my-4">
+                      {newDog.photoUrl ? (
+                        <img
+                          src={newDog.photoUrl}
+                          alt="New Dog"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zM12 14c-4.4 0-8 2.6-8 6v1h16v-1c0-3.4-3.6-6-8-6z"></path>
+                          </svg>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                        onChange={(e) => handleDogPhotoChange(e.target.files![0])}
+                      />
+                    </div>
+                    <button
+                      onClick={handleSaveNewDog}
+                      className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 mb-4"
+                    >
+                      Guardar Perro
+                    </button>
+                    <button
+                      onClick={handleCancelAddDog}
+                      className="w-full p-2 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <button
+                  onClick={handleAddDog}
+                  className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 mb-4"
+                >
+                  Añadir Nuevo Perro
+                </button>
+              )}
             </>
           ) : (
             <>
