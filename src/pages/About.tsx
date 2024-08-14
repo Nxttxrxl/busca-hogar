@@ -9,11 +9,12 @@ const About: React.FC = () => {
       {/* Introducción */}
       <div className="flex flex-col md:flex-row md:space-x-8">
         <div className="flex-shrink-0">
-          <img 
-            src="https://via.placeholder.com/400x300" 
-            alt="Imagen de Hogar Animal" 
-            className="w-full h-auto object-cover rounded-lg shadow-md"
-          />
+        <img 
+          src="/images/group.jpeg" 
+          alt="Imagen de Hogar Animal" 
+          className="w-[400px] h-[300px] object-cover rounded-lg shadow-md"
+        />
+
         </div>
         <div className="mt-4 md:mt-0">
           <p className="text-lg">
@@ -39,7 +40,7 @@ const About: React.FC = () => {
 
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <img 
-              src="https://via.placeholder.com/150" 
+              src="/images/rafel.jpeg" 
               alt="Rafel" 
               className="w-24 h-24 rounded-full mx-auto mb-4"
             />
@@ -53,7 +54,7 @@ const About: React.FC = () => {
           
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <img 
-              src="https://via.placeholder.com/150" 
+              src="/images/anouar.jpeg" 
               alt="Anouar" 
               className="w-24 h-24 rounded-full mx-auto mb-4"
             />
@@ -67,7 +68,7 @@ const About: React.FC = () => {
           
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <img 
-              src="https://via.placeholder.com/150" 
+              src="/images/andrei.jpeg" 
               alt="Andrei" 
               className="w-24 h-24 rounded-full mx-auto mb-4"
             />
@@ -81,7 +82,7 @@ const About: React.FC = () => {
          
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <img 
-              src="https://via.placeholder.com/150" 
+              src="/images/mihail.jpeg" 
               alt="Mihail" 
               className="w-24 h-24 rounded-full mx-auto mb-4"
             />
