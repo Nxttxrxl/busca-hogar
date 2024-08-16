@@ -10,7 +10,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="text-black p-4 shadow-md flex justify-between items-center">
+    <header className="text-black p-4 flex justify-between items-center">
       <div>
         <img src="./images/Logo.png" alt="" />
         <div className="flex space-x-4">

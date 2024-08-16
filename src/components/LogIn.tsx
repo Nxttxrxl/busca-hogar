@@ -40,6 +40,7 @@ const LogIn: React.FC = () => {
             Iniciar Sesión
           </button>
         </form>
+        
       </div>
     );
   };

@@ -12,9 +12,10 @@ import "./App.css";
 const App: React.FC = () => {
   return (
     <Router>
+      <Layout>
       <div className="flex justify-center">
         <div className="w-[1200px]">
-          <Layout>
+          
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
@@ -23,9 +24,10 @@ const App: React.FC = () => {
               <Route path="/authpage" element={<Authpage />} />
               <Route path="/profile" element={<Profile />} />
             </Routes>
-          </Layout>
+          
         </div>
       </div>
+      </Layout>
     </Router>
   );
 };
