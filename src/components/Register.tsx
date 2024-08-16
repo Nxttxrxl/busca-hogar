@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-// Componente de Registro
+
 const Register: React.FC = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -14,7 +14,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="bg-white p-8 shadow-md rounded-md">
+    <div className="bg-white p-8 rounded-md">
       <h2 className="text-2xl font-bold mb-6 text-center">Registro</h2>
       <form onSubmit={handleRegister}>
         <div className="mb-4">

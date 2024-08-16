@@ -31,7 +31,12 @@ const AnimalCard: React.FC<{ petId: number }> = ({ petId }) => {
         const data: Pet = await response.json();
         setPet(data);
       } catch (err) {
-        setError(err.message);
+
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('An unknown error occurred');
+        }
       } finally {
         setLoading(false);
       }

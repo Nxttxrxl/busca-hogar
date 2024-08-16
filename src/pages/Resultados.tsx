@@ -1,11 +1,11 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+//import { useLocation } from 'react-router-dom';
 import Mapa from "../components/Mapa";
 import AnimalCard from '../components/AnimalCard';
 
 const Resultados: React.FC = () => {
-  const location = useLocation();
-  const { provincia, animal } = location.state as { provincia: string, animal: string };
+ // const location = useLocation();
+  //const { provincia, animal } = location.state as { provincia: string, animal: string };
 
  
 

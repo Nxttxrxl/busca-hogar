@@ -1,4 +1,3 @@
-// components/AdoptionTips.tsx
 import React from 'react';
 
 const tips = [

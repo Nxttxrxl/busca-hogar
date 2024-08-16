@@ -33,7 +33,7 @@ const Header: React.FC = () => {
         <SearchBar onSearch={handleSearch} />
         <div className="flex space-x-2">
           <Link
-            to="/authpage"
+            to="/login"
             className="p-1 text-sm bg-gray-700 text-white rounded-lg hover:bg-gray-800"
           >
             Log In
