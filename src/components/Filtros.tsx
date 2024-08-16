@@ -30,19 +30,19 @@ const Filtros: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full h-[400px] overflow-hidden">
       <video 
         autoPlay 
         muted 
         loop 
         className="absolute inset-0 w-full h-full object-cover"
       >
-        <source src="" type="video/mp4" />
+        <source src="images/bg-video.mp4" type="video/mp4" />
         Tu navegador no admite este vídeo.
       </video>
 
-      <div className="relative flex justify-center items-start w-full h-3/4 bg-black">
-        <div className="w-3/4 mt-12 p-6 bg-white bg-opacity-60 shadow-md rounded-lg max-w-4xl">
+      <div className="relative flex justify-center items-start w-full">
+        <div className="w-3/4 mt-12 p-6 bg-white bg-opacity-60 rounded-lg max-w-4xl">
           <div className="flex flex-col space-y-6 mb-6">
             <div className="flex-1">
               <label className="block mb-2 text-lg text-gray-700">Provincia:</label>
