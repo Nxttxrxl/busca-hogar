@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AutoComplete from './AutoComplete';
+import { FaDog, FaCat, FaQuestion } from 'react-icons/fa'; 
 
 const Filtros: React.FC = () => {
   const [provincia, setProvincia] = useState('');
@@ -19,15 +20,17 @@ const Filtros: React.FC = () => {
     'Valladolid', 'Vizcaya', 'Zamora', 'Zaragoza'
   ];
 
-  const animales = [
-    'Perro', 'Gato', 'Ave', 'Caballo', 'Otro'
-  ];
-
   const handleSearch = () => {
     navigate('/resultados', {
       state: { provincia, animal }
     });
   };
+
+  const animals = [
+    { name: 'Perro', icon: <FaDog size={40} /> },
+    { name: 'Gato', icon: <FaCat size={40} /> },
+    { name: 'Otro', icon: <FaQuestion size={40} /> },
+  ];
 
   return (
     <div className="relative w-full h-[400px] overflow-hidden">
@@ -42,10 +45,9 @@ const Filtros: React.FC = () => {
       </video>
 
       <div className="relative flex justify-center items-start w-full">
-        <div className="w-3/4 mt-12 p-6 bg-white bg-opacity-60 rounded-lg max-w-4xl">
+        <div className="w-3/4 mt-12 p-6 bg-white bg-opacity-50 rounded-lg max-w-4xl">
           <div className="flex flex-col space-y-6 mb-6">
             <div className="flex-1">
-              <label className="block mb-2 text-lg text-gray-700">Provincia:</label>
               <AutoComplete
                 options={provincias}
                 value={provincia}
@@ -54,13 +56,19 @@ const Filtros: React.FC = () => {
               />
             </div>
             <div className="flex-1">
-              <label className="block mb-2 text-lg text-gray-700">Animal:</label>
-              <AutoComplete
-                options={animales}
-                value={animal}
-                onChange={setAnimal}
-                onSelect={setAnimal}
-              />
+              <div className="flex justify-center space-x-4"> {/* Centra los iconos horizontalmente */}
+                {animals.map((animalOption) => (
+                  <button
+                    key={animalOption.name}
+                    className={`p-4 rounded-lg flex flex-col items-center 
+                      ${animal === animalOption.name ? 'bg-gray-800 text-white' : 'bg-white text-gray-700'}`}
+                    onClick={() => setAnimal(animalOption.name)}
+                  >
+                    {animalOption.icon}
+                    <span className="mt-2 text-sm">{animalOption.name}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
           <button

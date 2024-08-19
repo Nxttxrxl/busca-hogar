@@ -10,6 +10,8 @@ import "./App.css";
 import Register from "./components/Register";
 import LogIn from "./pages/LogIn";
 import ResetPassword from "./components/ResetPassword";
+import Centers from "./pages/Centers";
+import SearchResults from "./pages/SearchResults";
 
 const App: React.FC = () => {
   return (
@@ -23,10 +25,12 @@ const App: React.FC = () => {
               <Route path="/about" element={<About />} />
               <Route path="/colabora" element={<Colabora />} />
               <Route path="/resultados" element={<Resultados />} />
+              <Route path="/search" element={<SearchResults />} />
               <Route path="/login" element={<LogIn />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/register" element={<Register />} />
               <Route path="/resetpassword" element={<ResetPassword />} />
+              <Route path="/centers" element={<Centers />} />
             </Routes>
           
         </div>

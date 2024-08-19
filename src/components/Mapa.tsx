@@ -44,7 +44,6 @@ const Mapa: React.FC = () => {
 
   return (
     <div className='w-full mt-5 justify-center items-center'>
-      <h1 className='text-4xl font-bold mb-2'>Mapa de refugios</h1>
       <MapContainer
         center={userPosition || [41.141206, 1.046194]} // Usa la ubicación del usuario si está disponible
         zoom={userPosition ? 13 : 10} // Ajusta el zoom en base a si se tiene la ubicación del usuario

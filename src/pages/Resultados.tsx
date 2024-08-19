@@ -11,12 +11,12 @@ const Resultados: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col items-center p-6">
-      <div className="w-full max-w-4xl p-6 bg-white shadow-md rounded-lg mb-6">
+      <div className="w-full p-6 bg-white shadow-md rounded-lg mb-6">
         <h1 className="text-2xl font-bold mb-4">Resultados de la búsqueda</h1>
       </div>
 
       
-      <div className="w-full max-w-4xl p-6 bg-white shadow-md rounded-lg mb-6">
+      <div className="w-full p-6 bg-white shadow-md rounded-lg mb-6">
       <AnimalCard petId={1} />
       </div>
 
