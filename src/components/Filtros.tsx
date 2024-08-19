@@ -45,7 +45,7 @@ const Filtros: React.FC = () => {
       </video>
 
       <div className="relative flex justify-center items-start w-full">
-        <div className="w-3/4 mt-12 p-6 bg-white bg-opacity-50 rounded-lg max-w-4xl">
+        <div className="w-3/4 mt-12 p-6 bg-black bg-opacity-30 rounded-lg max-w-4xl">
           <div className="flex flex-col space-y-6 mb-6">
             <div className="flex-1">
               <AutoComplete

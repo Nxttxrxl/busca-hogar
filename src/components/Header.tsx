@@ -51,11 +51,11 @@ const Header: React.FC = () => {
       </div>
 
       <nav className="flex space-x-8">
-        <Link to="/about" className="text-lg text-gray-700 hover:text-gray-900">
-          Sobre Nosotros
-        </Link>
         <Link to="/centers" className="text-lg text-gray-700 hover:text-gray-900">
           Refugios/Protectoras
+        </Link>
+        <Link to="/about" className="text-lg text-gray-700 hover:text-gray-900">
+          Sobre Nosotros
         </Link>
         <Link to="/colabora" className="text-lg text-gray-700 hover:text-gray-900">
           Contacto

@@ -25,14 +25,8 @@ const Footer: React.FC = () => {
             <ul>
               <li><a href="/" className="text-sm hover:underline">Inicio</a></li>
               <li><a href="/about" className="text-sm hover:underline">Sobre Nosotros</a></li>
-            </ul>
-          </div>
-
-
-          <div className="w-full md:w-1/4 mb-6 md:mb-0">
-            <ul>
-              <li><a href="/colabora" className="text-sm hover:underline">Colabora</a></li>
-              <li><a href="/privacy" className="text-sm hover:underline">Política de Privacidad</a></li>
+              <li><a href="/colabora" className="text-sm hover:underline">Contacto</a></li>
+              <li><a href="/privacity" className="text-sm hover:underline">Política de Privacidad</a></li>
               <li><a href="/terms" className="text-sm hover:underline">Términos de Servicio</a></li>
             </ul>
           </div>
