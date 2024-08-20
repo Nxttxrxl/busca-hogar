@@ -13,6 +13,7 @@ import ResetPassword from "./components/ResetPassword";
 import Centers from "./pages/Centers";
 import SearchResults from "./pages/SearchResults";
 import Privacity from "./pages/Privacity";
+import Terms from "./pages/Terms";
 
 const App: React.FC = () => {
   return (
@@ -33,6 +34,7 @@ const App: React.FC = () => {
               <Route path="/resetpassword" element={<ResetPassword />} />
               <Route path="/centers" element={<Centers />} />
               <Route path="/privacity" element={<Privacity />} />
+              <Route path="terms" element={<Terms />} />
             </Routes>
           
         </div>
