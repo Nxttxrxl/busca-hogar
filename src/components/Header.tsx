@@ -52,7 +52,7 @@ const Header: React.FC = () => {
 
       <nav className="flex space-x-8">
         <Link to="/centers" className="text-lg text-gray-700 hover:text-gray-900">
-          Refugios/Protectoras
+          Refugios y Protectoras
         </Link>
         <Link to="/about" className="text-lg text-gray-700 hover:text-gray-900">
           Sobre Nosotros

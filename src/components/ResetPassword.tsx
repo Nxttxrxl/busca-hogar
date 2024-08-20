@@ -27,7 +27,7 @@ const ResetPassword: React.FC = () => {
       const data = await response.json();
       setMessage(data.message || 'Se ha enviado un enlace para restablecer tu contraseña al correo electrónico proporcionado.');
     } catch (err) {
-      setError('Hubo un problema al enviar el enlace de restablecimiento. Por favor, intenta nuevamente.');
+      setError('No se ha encontrado ningun usuario con este correo electrónico.');
     }
   };
 
@@ -49,14 +49,14 @@ const ResetPassword: React.FC = () => {
           type="submit"
           className="w-full p-2 bg-gray-700 text-white rounded hover:bg-gray-800"
         >
-          Enviar Enlace de Restablecimiento
+          Restablece tu contraseña
         </button>
       </form>
       {message && <p className="mt-4 text-green-600 text-center">{message}</p>}
       {error && <p className="mt-4 text-red-600 text-center">{error}</p>}
       <div className="mt-4 text-center">
         <Link to="/login" className="text-sm text-blue-600 hover:underline">
-          Regresar al inicio de sesión
+          Inicia sesión
         </Link>
       </div>
     </div>

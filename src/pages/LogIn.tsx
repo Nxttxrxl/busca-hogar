@@ -43,7 +43,7 @@ const LogIn: React.FC = () => {
       </form>
       <div className="mt-4 text-center">
         <Link to="/resetpassword" className="text-sm text-blue-600 hover:underline">
-          ¿Perdiste tu contraseña?
+          ¿Has perdido tu contraseña?
         </Link>
       </div>
       <div className="mt-2 text-center">
