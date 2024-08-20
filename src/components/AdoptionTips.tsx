@@ -18,7 +18,7 @@ const warnings = [
 
 const AdoptionTips: React.FC = () => {
   return (
-    <section className="w-full  py-4 bg-white my-6">
+    <section className="w-full py-4 bg-white my-6">
       <div className="container mx-auto">
         <h2 className="text-2xl font-bold mb-4">Consejos para Adoptar</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

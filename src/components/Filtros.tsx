@@ -33,7 +33,7 @@ const Filtros: React.FC = () => {
   ];
 
   return (
-    <div className="relative w-full h-[400px] overflow-hidden">
+    <div className="relative w-[1800px] h-[400px] ">
       <video 
         autoPlay 
         muted 
