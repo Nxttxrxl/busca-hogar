@@ -1,17 +1,70 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { useAuth } from "../context/AuthContext"; // Importa el contexto
 
 const LogIn: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const { login } = useAuth(); // Usa la función login del contexto
+  const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ username, password });
+
+    try {
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to log in");
+      }
+
+      const token = await response.text();
+      const decodedToken: any = jwtDecode(token);
+
+      if (decodedToken.userId) {
+        const userId = decodedToken.userId;
+
+        const userResponse = await fetch(`http://localhost:8080/protected/api/users/${userId}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!userResponse.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+
+        const userData = await userResponse.json();
+        console.log("User data:", userData);
+
+        // Usa la función login del contexto para almacenar los datos del usuario y el token
+        login(userData);
+
+        // La navegación se maneja aquí
+        navigate("/"); // Redirige a la página principal
+
+      } else {
+        throw new Error("userId is not present in the token");
+      }
+
+    } catch (error) {
+      console.error("Error during login:", error);
+      setError("Hubo un problema con el inicio de sesión. Por favor, inténtalo de nuevo.");
+    }
   };
 
   return (
-    <div className="w-full flex-box p-8 shadow-md rounded-md">
+    <div className="w-1/2 p-6 m-4 shadow-md rounded-md mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-center">Iniciar Sesión</h2>
       <form onSubmit={handleLogin}>
         <div className="mb-4">
@@ -41,6 +94,7 @@ const LogIn: React.FC = () => {
           Iniciar Sesión
         </button>
       </form>
+      {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
       <div className="mt-4 text-center">
         <Link to="/resetpassword" className="text-sm text-blue-600 hover:underline">
           ¿Perdiste tu contraseña?
