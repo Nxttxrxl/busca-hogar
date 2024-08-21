@@ -15,6 +15,7 @@ import Centers from "./pages/Centers";
 import SearchResults from "./pages/SearchResults";
 import Privacity from "./pages/Privacity";
 import Terms from "./pages/Terms";
+import CenterDetail from "./pages/CenterDetail";
 
 const App: React.FC = () => {
   return (
@@ -34,6 +35,9 @@ const App: React.FC = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/resetpassword" element={<ResetPassword />} />
                 <Route path="/centers" element={<Centers />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacity" element={<Privacity />} />
+                <Route path="/center/:id" element={<CenterDetail />} />
               </Routes>
             </div>
           </div>
