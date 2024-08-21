@@ -2,11 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import centersData from '../JSON/adoption_centers.json';
 
 type Coordinates = [number, number];
 
+interface Center {
+  center_id: number;
+  user_id: number;
+  name: string;
+  address: string;
+  postal_code: string;
+  phone: string;
+  website: string;
+  foundation_year: number;
+  photoURL: string;
+}
+
 const Mapa: React.FC = () => {
   const [userPosition, setUserPosition] = useState<Coordinates | null>(null);
+  const [centers, setCenters] = useState<{ name: string; position: Coordinates; phone: string; website: string; photoURL: string }[]>([]);
 
   const userIcon = new L.Icon({
     iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -18,19 +32,12 @@ const Mapa: React.FC = () => {
     shadowAnchor: [13, 41],
   });
 
-  const shelterIcon = new L.Icon({
+  const centerIcon = new L.Icon({
     iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
   });
-
-  // Array actualizado con más detalles
-  const shelters = [
-    { name: 'Refugi Baix Camp', position: [41.141206, 1.046194] as Coordinates, city: 'Reus', imageUrl: 'https://example.com/image1.jpg', website: 'https://example.com', email: 'info@example.com', phone: '123-456-789' },
-    { name: 'Refugi de Barcelona', position: [41.3874, 2.1686] as Coordinates, city: 'Barcelona', imageUrl: 'https://example.com/image2.jpg', website: 'https://example.com', email: 'info@example.com', phone: '123-456-789' },
-    // Añade más refugios aquí
-  ];
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -44,6 +51,38 @@ const Mapa: React.FC = () => {
         }
       );
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchCenterCoordinates = async () => {
+      const geocodeUrl = 'https://nominatim.openstreetmap.org/search?format=json&q=';
+
+      const centerPromises = centersData.map(async (center: Center) => {
+        try {
+          const response = await fetch(`${geocodeUrl}${encodeURIComponent(center.address)}`);
+          const data = await response.json();
+          const location = data[0];
+          if (location) {
+            return {
+              name: center.name,
+              position: [parseFloat(location.lat), parseFloat(location.lon)] as Coordinates,
+              phone: center.phone,
+              website: center.website,
+              photoURL: center.photoURL,
+            };
+          }
+          return null;
+        } catch (error) {
+          console.error('Error fetching geocode data', error);
+          return null;
+        }
+      });
+
+      const centersWithCoordinates = (await Promise.all(centerPromises)).filter((center) => center !== null) as { name: string; position: Coordinates; phone: string; website: string; photoURL: string }[];
+      setCenters(centersWithCoordinates);
+    };
+
+    fetchCenterCoordinates();
   }, []);
 
   return (
@@ -64,16 +103,14 @@ const Mapa: React.FC = () => {
             </Popup>
           </Marker>
         )}
-        {shelters.map((shelter, index) => (
-          <Marker key={index} position={shelter.position} icon={shelterIcon}>
+        {centers.map((center, index) => (
+          <Marker key={index} position={center.position} icon={centerIcon}>
             <Popup>
               <div style={{ width: '200px' }}>
-                <img src={shelter.imageUrl} alt={shelter.name} style={{ width: '100%', height: 'auto' }} />
-                <h3>{shelter.name}</h3>
-                <p><strong>Ciudad:</strong> {shelter.city}</p>
-                <p><strong>Website:</strong> <a href={shelter.website} target="_blank" rel="noopener noreferrer">{shelter.website}</a></p>
-                <p><strong>Email:</strong> <a href={`mailto:${shelter.email}`}>{shelter.email}</a></p>
-                <p><strong>Teléfono:</strong> {shelter.phone}</p>
+                <img src={center.photoURL} alt={center.name} style={{ width: '100%', height: 'auto' }} />
+                <h3>{center.name}</h3>
+                <p><strong>Teléfono:</strong> {center.phone}</p>
+                <p><strong>Website:</strong> <a href={center.website} target="_blank" rel="noopener noreferrer">{center.website}</a></p>
               </div>
             </Popup>
           </Marker>
@@ -84,14 +121,3 @@ const Mapa: React.FC = () => {
 };
 
 export default Mapa;
-
-
-
-
-
-
-
-
-
-
-
