@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { Link } from 'react-router-dom';
 
 interface State {
   stateId: number;
@@ -14,6 +15,7 @@ interface City {
 
 const Profile: React.FC = () => {
   const { userData, login } = useAuth();
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const [formState, setFormState] = useState(() => {
     if (userData && typeof userData.city !== 'string') {
@@ -80,7 +82,7 @@ const Profile: React.FC = () => {
   useEffect(() => {
     if (userData && typeof userData.city !== 'string') {
       const cityData = userData.city as City; // Forzar el tipo aquí
-  
+
       setFormState((prevState) => ({
         ...prevState,
         email: userData.email || "",
@@ -90,7 +92,7 @@ const Profile: React.FC = () => {
         postalCode: userData.postalCode?.toString() || "",
         phoneNumber: userData.phoneNumber || "",
       }));
-  
+
       const filtered = cities.filter(
         (city) => city.state.stateId === cityData.state.stateId
       );
@@ -143,7 +145,12 @@ const Profile: React.FC = () => {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setSelectedImage(e.target.files[0]);
+      const file = e.target.files[0];
+      setSelectedImage(file);
+
+      // Crear una URL de objeto para la previsualización de la imagen
+      const previewUrl = URL.createObjectURL(file);
+      setPreviewImage(previewUrl);
     }
   };
 
@@ -180,7 +187,7 @@ const Profile: React.FC = () => {
       }
       if (userData.city && typeof userData.city !== 'string') {
         const cityData = userData.city as City; // Forzar el tipo aquí
-  
+
         if (formState.city !== cityData.cityId.toString()) {
           formData.append("cityId", formState.city);
         }
@@ -243,10 +250,10 @@ const Profile: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <div className="flex flex-col lg:flex-row bg-white shadow-lg rounded-lg overflow-hidden">
-        <div className="flex flex-col items-center p-6 bg-gray-100 lg:w-1/3 h-auto">
+      <div className="flex flex-col lg:flex-row bg-white gap-4 overflow-hidden">
+        <div className="flex flex-col items-center p-6 bg-gray-100 lg:w-1/3 lg:max-h-[400px] h-auto shadow-lg rounded-lg flex-shrink-0">
           <img
-            src={`data:image/jpeg;base64,${userData.image}`}
+            src={previewImage || `data:image/jpeg;base64,${userData.image}`}
             alt="Perfil"
             className="w-32 h-32 rounded-full object-cover mb-4"
           />
@@ -265,16 +272,19 @@ const Profile: React.FC = () => {
             onChange={handleImageChange}
             className="hidden"
           />
-          {selectedImage && (
-            <p className="text-sm text-gray-600 mt-2">{selectedImage.name}</p>
-          )}
           <p className="text-sm text-gray-400 text-center mt-4">
             Sube una nueva imagen de perfil.
             <br />
             El tamaño máximo de la imagen es de 16 MB.
           </p>
+          <Link
+            to="/resetpassword"
+            className="text-blue-500 hover:underline text-sm mt-4"
+          >
+            Cambiar Contraseña
+          </Link>
         </div>
-        <div className="p-6 lg:w-2/3">
+        <div className="p-6 lg:w-2/3 rounded-lg shadow-lg me-2 mb-4">
           <h3 className="text-2xl font-semibold mb-6">Editar Perfil</h3>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
