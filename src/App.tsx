@@ -16,6 +16,7 @@ import SearchResults from "./pages/SearchResults";
 import Privacity from "./pages/Privacity";
 import Terms from "./pages/Terms";
 import CenterDetail from "./pages/CenterDetail";
+import AnimalDetail from "./pages/AnimalDetail";
 
 const App: React.FC = () => {
   return (
@@ -38,6 +39,7 @@ const App: React.FC = () => {
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacity" element={<Privacity />} />
                 <Route path="/center/:id" element={<CenterDetail />} />
+                <Route path="/animal/:id" element={<AnimalDetail />} /> {/* Nueva ruta */}
               </Routes>
             </div>
           </div>

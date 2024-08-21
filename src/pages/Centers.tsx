@@ -8,7 +8,7 @@ const Centers: React.FC = () => {
   
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="w-full flex flex-col">
       <div className="flex flex-grow">
         <div className="flex-grow p-4">
           <Mapa />

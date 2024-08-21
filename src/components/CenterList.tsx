@@ -25,7 +25,7 @@ const CenterList: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full mt6">
+    <div className="flex flex-box w-full mt6">
       {centers.map((center) => (
         <div key={center.center_id} className="px-2 ">
           <CenterCard center={center} />

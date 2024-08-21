@@ -24,7 +24,7 @@
       "photoURL": "https://www.refugiofeliz.com/foto.jpg"
     },
     {
-        "center_id": 1,
+        "center_id": 3,
         "user_id": 123,
         "name": "Refugi Baix Camp",
         "address": "123 Calle Ejemplo, Reus, España",
@@ -35,7 +35,7 @@
         "photoURL": "https://example.com/image1.jpg"
       },
       {
-        "center_id": 2,
+        "center_id": 4,
         "user_id": 456,
         "name": "Refugi de Barcelona",
         "address": "456 Avenida Ejemplo, Barcelona, España",
