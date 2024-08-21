@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext"; 
 import About from "./pages/About";
 import Resultados from "./pages/Resultados";
 import Colabora from "./pages/Colabora";
@@ -17,30 +18,28 @@ import Terms from "./pages/Terms";
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Layout>
-      <div className="flex justify-center">
-        <div className="w-[1200px]">
-          
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/colabora" element={<Colabora />} />
-              <Route path="/resultados" element={<Resultados />} />
-              <Route path="/search" element={<SearchResults />} />
-              <Route path="/login" element={<LogIn />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/resetpassword" element={<ResetPassword />} />
-              <Route path="/centers" element={<Centers />} />
-              <Route path="/privacity" element={<Privacity />} />
-              <Route path="terms" element={<Terms />} />
-            </Routes>
-          
-        </div>
-      </div>
-      </Layout>
-    </Router>
+    <AuthProvider> {/* Envolvemos la aplicación con AuthProvider */}
+      <Router>
+        <Layout>
+          <div className="flex justify-center">
+            <div className="w-[1200px]">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/colabora" element={<Colabora />} />
+                <Route path="/resultados" element={<Resultados />} />
+                <Route path="/search" element={<SearchResults />} />
+                <Route path="/login" element={<LogIn />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/resetpassword" element={<ResetPassword />} />
+                <Route path="/centers" element={<Centers />} />
+              </Routes>
+            </div>
+          </div>
+        </Layout>
+      </Router>
+    </AuthProvider>
   );
 };
 

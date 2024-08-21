@@ -1,313 +1,374 @@
-import React, { useState } from "react";
-import Register from "../components/Register";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+
+interface State {
+  stateId: number;
+  name: string;
+}
+
+interface City {
+  cityId: number;
+  name: string;
+  state: State;
+}
 
 const Profile: React.FC = () => {
-  const [isRegistered] = useState(true); // Cambia esto a true o false para simular si está registrado
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [accountType, setAccountType] = useState("shelter"); // Cambia esto a "user" o "shelter"
-  const [description, setDescription] = useState("");
-  const [location, setLocation] = useState("");
-  const [profilePicture, setProfilePicture] = useState<File | null>(null);
-  const [shelterName, setShelterName] = useState("");
-  const [availableDogs, setAvailableDogs] = useState<{ name: string; breed: string; age: string; description: string; photoUrl: string; }[]>([]);
-  const [isAddingDog, setIsAddingDog] = useState(false); // Controla si se está agregando un perro nuevo
-  const [newDog, setNewDog] = useState<{ name: string; breed: string; age: string; description: string; photoUrl: string; }>({
-    name: "",
-    breed: "",
-    age: "",
-    description: "",
-    photoUrl: ""
+  const { userData, login } = useAuth();
+
+  const [formState, setFormState] = useState(() => {
+    if (userData && typeof userData.city !== 'string') {
+      const cityData = userData.city as City; // Forzar el tipo aquí
+      return {
+        confirmPassword: "",
+        email: userData.email || "",
+        address: userData.address || "",
+        city: cityData.name.toString() || "", // Nombre de la ciudad
+        state: cityData.state.stateId.toString() || "", // ID del estado
+        postalCode: userData.postalCode?.toString() || "",
+        phoneNumber: userData.phoneNumber || "",
+      };
+    } else {
+      return {
+        confirmPassword: "",
+        email: userData?.email || "",
+        address: userData?.address || "",
+        city: "",
+        state: "",
+        postalCode: userData?.postalCode?.toString() || "",
+        phoneNumber: userData?.phoneNumber || "",
+      };
+    }
   });
 
-  const handleSave = () => {
-    console.log({
-      username,
-      email,
-      accountType,
-      description,
-      location,
-      profilePicture,
-      shelterName,
-      availableDogs,
-    });
-    // Aquí puedes agregar la lógica para guardar los datos en tu backend o estado global
+  const [states, setStates] = useState<State[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [filteredCities, setFilteredCities] = useState<City[]>([]);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+  useEffect(() => {
+    const fetchStatesAndCities = async () => {
+      const storedStates = localStorage.getItem("states");
+      const storedCities = localStorage.getItem("cities");
+
+      if (storedStates && storedCities) {
+        setStates(JSON.parse(storedStates));
+        setCities(JSON.parse(storedCities));
+      } else {
+        try {
+          const [statesResponse, citiesResponse] = await Promise.all([
+            fetch("http://localhost:8080/api/states"),
+            fetch("http://localhost:8080/api/cities"),
+          ]);
+
+          const statesData = await statesResponse.json();
+          const citiesData = await citiesResponse.json();
+
+          setStates(statesData);
+          setCities(citiesData);
+
+          localStorage.setItem("states", JSON.stringify(statesData));
+          localStorage.setItem("cities", JSON.stringify(citiesData));
+        } catch (error) {
+          console.error("Error fetching states and cities:", error);
+        }
+      }
+    };
+
+    fetchStatesAndCities();
+  }, []);
+
+  useEffect(() => {
+    if (userData && typeof userData.city !== 'string') {
+      const cityData = userData.city as City; // Forzar el tipo aquí
+  
+      setFormState((prevState) => ({
+        ...prevState,
+        email: userData.email || "",
+        address: userData.address || "",
+        city: cityData.cityId?.toString() || "",
+        state: cityData.state.stateId?.toString() || "",
+        postalCode: userData.postalCode?.toString() || "",
+        phoneNumber: userData.phoneNumber || "",
+      }));
+  
+      const filtered = cities.filter(
+        (city) => city.state.stateId === cityData.state.stateId
+      );
+      setFilteredCities(filtered);
+    }
+  }, [userData, states, cities]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormState((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
-  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setProfilePicture(e.target.files[0]);
+  const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedStateId = e.target.value;
+
+    setFormState((prevState) => ({
+      ...prevState,
+      state: selectedStateId,
+      city: "",
+    }));
+
+    const filtered = cities.filter(
+      (city) => city.state.stateId === parseInt(selectedStateId, 10)
+    );
+    setFilteredCities(filtered);
+  };
+
+  const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCityId = e.target.value;
+
+    setFormState((prevState) => ({
+      ...prevState,
+      city: selectedCityId,
+    }));
+
+    const selectedCity = cities.find(
+      (city) => city.cityId === parseInt(selectedCityId, 10)
+    );
+
+    if (selectedCity) {
+      setFormState((prevState) => ({
+        ...prevState,
+        state: selectedCity.state.stateId.toString(),
+      }));
     }
   };
 
-  const handleAddDog = () => {
-    setIsAddingDog(true);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedImage(e.target.files[0]);
+    }
   };
 
-  const handleCancelAddDog = () => {
-    setIsAddingDog(false);
-    setNewDog({ name: "", breed: "", age: "", description: "", photoUrl: "" });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!userData) {
+      console.error("No user data available");
+      return;
+    }
+
+    try {
+      const tokenResponse = await fetch("http://localhost:8080/api/auth/token", {
+        method: "GET",
+      });
+
+      if (!tokenResponse.ok) {
+        throw new Error("Failed to obtain token");
+      }
+
+      const token = await tokenResponse.text();
+
+      const formData = new FormData();
+
+      if (selectedImage) {
+        formData.append("image", selectedImage);
+      }
+
+      if (formState.email !== userData?.email) {
+        formData.append("email", formState.email);
+      }
+      if (formState.address !== userData?.address) {
+        formData.append("address", formState.address);
+      }
+      if (userData.city && typeof userData.city !== 'string') {
+        const cityData = userData.city as City; // Forzar el tipo aquí
+  
+        if (formState.city !== cityData.cityId.toString()) {
+          formData.append("cityId", formState.city);
+        }
+        if (formState.state !== cityData.state.stateId.toString()) {
+          formData.append("stateId", formState.state);
+        }
+      }
+      if (formState.postalCode !== userData?.postalCode?.toString()) {
+        formData.append("postalCode", formState.postalCode);
+      }
+      if (formState.phoneNumber !== userData?.phoneNumber) {
+        formData.append("phoneNumber", formState.phoneNumber);
+      }
+
+      const response = await fetch(
+        `http://localhost:8080/protected/api/users/${userData?.userId}`,
+        {
+          method: "PATCH",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const updatedDataResponse = await fetch(
+          `http://localhost:8080/protected/api/users/${userData?.userId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (updatedDataResponse.ok) {
+          const updatedUserData = await updatedDataResponse.json();
+
+          localStorage.setItem("userData", JSON.stringify(updatedUserData));
+          login(updatedUserData);
+
+          alert("Perfil actualizado exitosamente");
+        } else {
+          alert("Error al obtener los datos actualizados.");
+        }
+      } else {
+        const errorText = await response.text();
+        alert(`Error al actualizar el perfil: ${errorText}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Ocurrió un error al actualizar el perfil.");
+    }
   };
 
-  const handleSaveNewDog = () => {
-    setAvailableDogs([...availableDogs, newDog]);
-    setIsAddingDog(false);
-    setNewDog({ name: "", breed: "", age: "", description: "", photoUrl: "" });
-  };
-
-  const handleDogChange = (field: string, value: string) => {
-    setNewDog({ ...newDog, [field]: value });
-  };
-
-  const handleDogPhotoChange = (file: File) => {
-    setNewDog({ ...newDog, photoUrl: URL.createObjectURL(file) });
-  };
+  if (!userData) {
+    return <p>Cargando...</p>;
+  }
 
   return (
-    <div className="w-full mx-auto p-6 bg-white shadow-md rounded-md m-5">
-      {isRegistered ? (
-        <>
-          <h1 className="text-3xl font-bold mb-6">Perfil</h1>
-
-          {accountType === "shelter" ? (
-            <>
+    <div className="container mx-auto p-6">
+      <div className="flex flex-col lg:flex-row bg-white shadow-lg rounded-lg overflow-hidden">
+        <div className="flex flex-col items-center p-6 bg-gray-100 lg:w-1/3 h-auto">
+          <img
+            src={`data:image/jpeg;base64,${userData.image}`}
+            alt="Perfil"
+            className="w-32 h-32 rounded-full object-cover mb-4"
+          />
+          <h2 className="text-xl font-semibold mb-2">{userData.username}</h2>
+          <button
+            type="button"
+            onClick={() => document.getElementById("imageUpload")?.click()}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mb-2"
+          >
+            Subir Nueva Foto
+          </button>
+          <input
+            id="imageUpload"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="hidden"
+          />
+          {selectedImage && (
+            <p className="text-sm text-gray-600 mt-2">{selectedImage.name}</p>
+          )}
+          <p className="text-sm text-gray-400 text-center mt-4">
+            Sube una nueva imagen de perfil.
+            <br />
+            El tamaño máximo de la imagen es de 16 MB.
+          </p>
+        </div>
+        <div className="p-6 lg:w-2/3">
+          <h3 className="text-2xl font-semibold mb-6">Editar Perfil</h3>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label className="block text-sm font-semibold mb-2">Nombre de Usuario</label>
+              <input
+                type="text"
+                name="username"
+                value={userData.username || ""}
+                readOnly
+                className="w-full p-3 border rounded bg-gray-200 cursor-not-allowed"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-semibold mb-2">Correo Electrónico</label>
+              <input
+                type="email"
+                name="email"
+                value={formState.email}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded"
+              />
+            </div>
+            <h4 className="text-xl font-semibold mb-4 mt-6">Información de Dirección</h4>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="mb-4">
-                <label className="block mb-2 text-sm">Nombre de la Protectora</label>
+                <label className="block text-sm font-semibold mb-2">Dirección</label>
                 <input
                   type="text"
-                  className="w-full p-2 border rounded"
-                  value={shelterName}
-                  onChange={(e) => setShelterName(e.target.value)}
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="block mb-2 text-sm">Ubicación</label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                />
-              </div>
-
-              <h2 className="text-2xl font-bold mb-4">Perros Disponibles</h2>
-              {availableDogs.map((dog, index) => (
-                <div key={index} className="mb-4 p-4 border rounded-md">
-                  <div className="flex items-center mb-4">
-                    <div className="relative w-24 h-24 bg-gray-200 rounded-full overflow-hidden">
-                      {dog.photoUrl ? (
-                        <img
-                          src={dog.photoUrl}
-                          alt="Dog"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zM12 14c-4.4 0-8 2.6-8 6v1h16v-1c0-3.4-3.6-6-8-6z"></path>
-                          </svg>
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="absolute inset-0 opacity-0 cursor-pointer"
-                        onChange={(e) => handleDogPhotoChange(e.target.files![0])}
-                      />
-                    </div>
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Nombre"
-                    value={dog.name}
-                    onChange={(e) => handleDogChange(index, "name", e.target.value)}
-                    className="w-full p-2 mb-2 border rounded"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Raza"
-                    value={dog.breed}
-                    onChange={(e) => handleDogChange(index, "breed", e.target.value)}
-                    className="w-full p-2 mb-2 border rounded"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Edad"
-                    value={dog.age}
-                    onChange={(e) => handleDogChange(index, "age", e.target.value)}
-                    className="w-full p-2 mb-2 border rounded"
-                  />
-                  <textarea
-                    placeholder="Descripción"
-                    value={dog.description}
-                    onChange={(e) => handleDogChange(index, "description", e.target.value)}
-                    className="w-full p-2 border rounded"
-                    rows={4}
-                  />
-                </div>
-              ))}
-              {isAddingDog ? (
-                <>
-                  <div className="mb-4 p-4 border rounded-md">
-                    <input
-                      type="text"
-                      placeholder="Nombre"
-                      value={newDog.name}
-                      onChange={(e) => handleDogChange("name", e.target.value)}
-                      className="w-full p-2 mb-2 border rounded"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Raza"
-                      value={newDog.breed}
-                      onChange={(e) => handleDogChange("breed", e.target.value)}
-                      className="w-full p-2 mb-2 border rounded"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Edad"
-                      value={newDog.age}
-                      onChange={(e) => handleDogChange("age", e.target.value)}
-                      className="w-full p-2 mb-2 border rounded"
-                    />
-                    <textarea
-                      placeholder="Descripción"
-                      value={newDog.description}
-                      onChange={(e) => handleDogChange("description", e.target.value)}
-                      className="w-full p-2 mb-2 border rounded"
-                      rows={4}
-                    />
-                    <div className="relative w-24 h-24 bg-gray-200 rounded-full overflow-hidden my-4">
-                      {newDog.photoUrl ? (
-                        <img
-                          src={newDog.photoUrl}
-                          alt="New Dog"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zM12 14c-4.4 0-8 2.6-8 6v1h16v-1c0-3.4-3.6-6-8-6z"></path>
-                          </svg>
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="absolute inset-0 opacity-0 cursor-pointer"
-                        onChange={(e) => handleDogPhotoChange(e.target.files![0])}
-                      />
-                    </div>
-                    <button
-                      onClick={handleSaveNewDog}
-                      className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 mb-4"
-                    >
-                      Guardar Perro
-                    </button>
-                    <button
-                      onClick={handleCancelAddDog}
-                      className="w-full p-2 bg-red-500 text-white rounded hover:bg-red-600"
-                    >
-                      Cancelar
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <button
-                  onClick={handleAddDog}
-                  className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 mb-4"
-                >
-                  Añadir Nuevo Perro
-                </button>
-              )}
-            </>
-          ) : (
-            <>
-              <div className="flex items-center mb-6">
-                <div className="relative w-24 h-24 bg-gray-200 rounded-full overflow-hidden">
-                  {profilePicture ? (
-                    <img
-                      src={URL.createObjectURL(profilePicture)}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zM12 14c-4.4 0-8 2.6-8 6v1h16v-1c0-3.4-3.6-6-8-6z"></path>
-                      </svg>
-                    </div>
-                  )}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                    onChange={handleProfilePictureChange}
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="block mb-2 text-sm">Nombre de Usuario</label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  name="address"
+                  value={formState.address}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border rounded"
                 />
               </div>
               <div className="mb-4">
-                <label className="block mb-2 text-sm">Correo Electrónico</label>
-                <input
-                  type="email"
-                  className="w-full p-2 border rounded"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block mb-2 text-sm">Tipo de Cuenta</label>
+                <label className="block text-sm font-semibold mb-2">Provincia</label>
                 <select
-                  className="w-full p-2 border rounded"
-                  value={accountType}
-                  onChange={(e) => setAccountType(e.target.value)}
+                  className="w-full p-3 border rounded"
+                  value={formState.state}
+                  onChange={handleStateChange}
                 >
-                  <option value="user">Usuario</option>
-                  <option value="shelter">Refugio/Protectora</option>
+                  <option value="">Selecciona una provincia</option>
+                  {states.map((state) => (
+                    <option key={state.stateId} value={state.stateId.toString()}>
+                      {state.name}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="mb-4">
-                <label className="block mb-2 text-sm">Descripción</label>
-                <textarea
-                  className="w-full p-2 border rounded"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={4}
+                <label className="block text-sm font-semibold mb-2">Ciudad</label>
+                <select
+                  className="w-full p-3 border rounded"
+                  value={formState.city}
+                  onChange={handleCityChange}
+                >
+                  <option value="">Selecciona un municipio</option>
+                  {filteredCities.map((city) => (
+                    <option key={city.cityId} value={city.cityId}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-semibold mb-2">Código Postal</label>
+                <input
+                  type="text"
+                  name="postalCode"
+                  value={formState.postalCode}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border rounded"
                 />
               </div>
               <div className="mb-4">
-                <label className="block mb-2 text-sm">Ubicación</label>
+                <label className="block text-sm font-semibold mb-2">Número de Teléfono</label>
                 <input
                   type="text"
-                  className="w-full p-2 border rounded"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
+                  name="phoneNumber"
+                  value={formState.phoneNumber}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border rounded"
                 />
               </div>
-            </>
-          )}
-
-          <button
-            onClick={handleSave}
-            className="w-full p-2 bg-gray-700 text-white rounded hover:bg-gray-800"
-          >
-            Guardar Cambios
-          </button>
-        </>
-      ) : (
-        <Register />
-      )}
+            </div>
+            <button
+              type="submit"
+              className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-4"
+            >
+              Actualizar Información
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
