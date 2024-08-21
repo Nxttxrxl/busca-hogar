@@ -45,7 +45,6 @@ const LogIn: React.FC = () => {
         }
 
         const userData = await userResponse.json();
-        console.log("User data:", userData);
 
         // Usa la función login del contexto para almacenar los datos del usuario y el token
         login(userData);

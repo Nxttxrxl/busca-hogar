@@ -40,6 +40,7 @@ const Register: React.FC = () => {
 
       if (response.ok) {
         alert("Usuario registrado exitosamente");
+        window.location.href = "/";
       } else {
         const errorText = await response.text();
         alert("Error en el registro: " + errorText);

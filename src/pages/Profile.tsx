@@ -13,16 +13,31 @@ interface City {
 }
 
 const Profile: React.FC = () => {
-  const { userData, login } = useAuth(); // Añadido login para actualizar los datos
+  const { userData, login } = useAuth();
 
-  const [formState, setFormState] = useState({
-    confirmPassword: "",
-    email: userData?.email || "",
-    address: userData?.address || "",
-    city: userData?.city || "",
-    state: userData?.state || "",
-    postalCode: userData?.postalCode || "",
-    phoneNumber: userData?.phoneNumber || "",
+  const [formState, setFormState] = useState(() => {
+    if (userData && typeof userData.city !== 'string') {
+      const cityData = userData.city as City; // Forzar el tipo aquí
+      return {
+        confirmPassword: "",
+        email: userData.email || "",
+        address: userData.address || "",
+        city: cityData.name.toString() || "", // Nombre de la ciudad
+        state: cityData.state.stateId.toString() || "", // ID del estado
+        postalCode: userData.postalCode?.toString() || "",
+        phoneNumber: userData.phoneNumber || "",
+      };
+    } else {
+      return {
+        confirmPassword: "",
+        email: userData?.email || "",
+        address: userData?.address || "",
+        city: "",
+        state: "",
+        postalCode: userData?.postalCode?.toString() || "",
+        phoneNumber: userData?.phoneNumber || "",
+      };
+    }
   });
 
   const [states, setStates] = useState<State[]>([]);
@@ -63,26 +78,23 @@ const Profile: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (userData) {
-      const userState = states.find((state) => state.name === userData.state);
-      const userCity = cities.find((city) => city.name === userData.city);
-
+    if (userData && typeof userData.city !== 'string') {
+      const cityData = userData.city as City; // Forzar el tipo aquí
+  
       setFormState((prevState) => ({
         ...prevState,
         email: userData.email || "",
         address: userData.address || "",
-        city: userCity ? userCity.cityId.toString() : "",
-        state: userState ? userState.stateId.toString() : "",
-        postalCode: userData.postalCode || "",
+        city: cityData.cityId?.toString() || "",
+        state: cityData.state.stateId?.toString() || "",
+        postalCode: userData.postalCode?.toString() || "",
         phoneNumber: userData.phoneNumber || "",
       }));
-
-      if (userState) {
-        const filtered = cities.filter(
-          (city) => city.state.stateId === userState.stateId
-        );
-        setFilteredCities(filtered);
-      }
+  
+      const filtered = cities.filter(
+        (city) => city.state.stateId === cityData.state.stateId
+      );
+      setFilteredCities(filtered);
     }
   }, [userData, states, cities]);
 
@@ -137,48 +149,52 @@ const Profile: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!userData) {
       console.error("No user data available");
       return;
     }
-  
+
     try {
       const tokenResponse = await fetch("http://localhost:8080/api/auth/token", {
         method: "GET",
       });
-  
+
       if (!tokenResponse.ok) {
         throw new Error("Failed to obtain token");
       }
-  
+
       const token = await tokenResponse.text();
-  
+
       const formData = new FormData();
-  
+
       if (selectedImage) {
         formData.append("image", selectedImage);
       }
-  
+
       if (formState.email !== userData?.email) {
         formData.append("email", formState.email);
       }
       if (formState.address !== userData?.address) {
         formData.append("address", formState.address);
       }
-      if (formState.city !== userData?.city) {
-        formData.append("cityId", formState.city);
+      if (userData.city && typeof userData.city !== 'string') {
+        const cityData = userData.city as City; // Forzar el tipo aquí
+  
+        if (formState.city !== cityData.cityId.toString()) {
+          formData.append("cityId", formState.city);
+        }
+        if (formState.state !== cityData.state.stateId.toString()) {
+          formData.append("stateId", formState.state);
+        }
       }
-      if (formState.state !== userData?.state) {
-        formData.append("stateId", formState.state);
-      }
-      if (formState.postalCode !== userData?.postalCode) {
+      if (formState.postalCode !== userData?.postalCode?.toString()) {
         formData.append("postalCode", formState.postalCode);
       }
       if (formState.phoneNumber !== userData?.phoneNumber) {
         formData.append("phoneNumber", formState.phoneNumber);
       }
-  
+
       const response = await fetch(
         `http://localhost:8080/protected/api/users/${userData?.userId}`,
         {
@@ -189,9 +205,8 @@ const Profile: React.FC = () => {
           },
         }
       );
-  
+
       if (response.ok) {
-        // Realizar una nueva solicitud para obtener los datos actualizados
         const updatedDataResponse = await fetch(
           `http://localhost:8080/protected/api/users/${userData?.userId}`,
           {
@@ -201,13 +216,13 @@ const Profile: React.FC = () => {
             },
           }
         );
-  
+
         if (updatedDataResponse.ok) {
           const updatedUserData = await updatedDataResponse.json();
-  
+
           localStorage.setItem("userData", JSON.stringify(updatedUserData));
-          login(updatedUserData); 
-  
+          login(updatedUserData);
+
           alert("Perfil actualizado exitosamente");
         } else {
           alert("Error al obtener los datos actualizados.");
@@ -229,7 +244,6 @@ const Profile: React.FC = () => {
   return (
     <div className="container mx-auto p-6">
       <div className="flex flex-col lg:flex-row bg-white shadow-lg rounded-lg overflow-hidden">
-        {/* Columna Izquierda */}
         <div className="flex flex-col items-center p-6 bg-gray-100 lg:w-1/3 h-auto">
           <img
             src={`data:image/jpeg;base64,${userData.image}`}
@@ -237,8 +251,6 @@ const Profile: React.FC = () => {
             className="w-32 h-32 rounded-full object-cover mb-4"
           />
           <h2 className="text-xl font-semibold mb-2">{userData.username}</h2>
-
-          {/* Botón para subir la imagen */}
           <button
             type="button"
             onClick={() => document.getElementById("imageUpload")?.click()}
@@ -246,8 +258,6 @@ const Profile: React.FC = () => {
           >
             Subir Nueva Foto
           </button>
-
-          {/* Input de archivo oculto */}
           <input
             id="imageUpload"
             type="file"
@@ -255,20 +265,15 @@ const Profile: React.FC = () => {
             onChange={handleImageChange}
             className="hidden"
           />
-
-          {/* Mostrar el nombre del archivo seleccionado */}
           {selectedImage && (
             <p className="text-sm text-gray-600 mt-2">{selectedImage.name}</p>
           )}
-
           <p className="text-sm text-gray-400 text-center mt-4">
             Sube una nueva imagen de perfil.
             <br />
             El tamaño máximo de la imagen es de 16 MB.
           </p>
         </div>
-
-        {/* Columna Derecha */}
         <div className="p-6 lg:w-2/3">
           <h3 className="text-2xl font-semibold mb-6">Editar Perfil</h3>
           <form onSubmit={handleSubmit}>
@@ -292,7 +297,6 @@ const Profile: React.FC = () => {
                 className="w-full p-3 border rounded"
               />
             </div>
-
             <h4 className="text-xl font-semibold mb-4 mt-6">Información de Dirección</h4>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="mb-4">
@@ -356,7 +360,6 @@ const Profile: React.FC = () => {
                 />
               </div>
             </div>
-
             <button
               type="submit"
               className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-4"
