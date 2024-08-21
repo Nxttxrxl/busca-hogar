@@ -30,8 +30,8 @@ const AnimalDetail: React.FC = () => {
   }
 
   return (
-    <div className="p-4 flex flex-col lg:flex-row items-center lg:items-start">
-      <img src={pet.photo_url} alt={pet.name} className="w-full lg:w-1/2 h-64 object-cover mb-4 lg:mb-0 lg:mr-4 rounded-lg shadow-lg" />
+    <div className="mt-4 p-4 flex flex-col lg:flex-row items-center lg:items-start">
+      <img src={pet.photo_url} alt={pet.name} className="w-full lg:w-1/2 h-72 object-cover mb-4 lg:mb-0 lg:mr-4 rounded-lg shadow-lg" />
       <div className="w-full lg:w-1/2">
         <h1 className="text-3xl font-bold mb-4">{pet.name}</h1>
         <p className="text-lg mb-2"><strong>Especie:</strong> {pet.species}</p>
