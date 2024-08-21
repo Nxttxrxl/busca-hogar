@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+// src/components/AnimalCard.tsx
+import React from 'react';
 
-interface Pet {
+export interface Pet {
   pet_id: number;
   center_id: number;
   name: string;
@@ -14,51 +15,9 @@ interface Pet {
   created_at: string;
 }
 
-const AnimalCard: React.FC<{ petId: number }> = ({ petId }) => {
-  const [pet, setPet] = useState<Pet | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchPet = async () => {
-      try {
-        const response = await fetch(`/api/pets/${petId}`);
-
-        if (!response.ok) {
-          throw new Error(`Error fetching pet: ${response.statusText}`);
-        }
-
-        const data: Pet = await response.json();
-        setPet(data);
-      } catch (err) {
-
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError('An unknown error occurred');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPet();
-  }, [petId]);
-
-  if (loading) {
-    return <div>Cargando...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (!pet) {
-    return <div>No se encuentra mascota.</div>;
-  }
-
+const AnimalCard: React.FC<{ pet: Pet }> = ({ pet }) => {
   return (
-    <div className="max-w-sm rounded overflow-hidden shadow-lg">
+    <div className="max-w-sm h-[450px] rounded overflow-hidden shadow-lg">
       <img
         className="w-full h-48 object-cover"
         src={pet.photo_url}
@@ -69,21 +28,21 @@ const AnimalCard: React.FC<{ petId: number }> = ({ petId }) => {
         <p className="text-gray-700 text-base">{pet.description}</p>
       </div>
       <div className="px-6 pt-4 pb-2">
-        <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+        <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
           {pet.species}
         </span>
-        <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+        <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
           {pet.breed}
         </span>
-        <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
-          {pet.age} years old
+        <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+          {pet.age} años
         </span>
-        <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+        <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
           {pet.gender}
         </span>
         {pet.available && (
-          <span className="inline-block bg-green-200 rounded-full px-3 py-1 text-sm font-semibold text-green-700 mr-2">
-            Available
+          <span className="inline-block bg-green-200 rounded-full px-3 py-1 text-sm font-semibold text-green-700 mr-2 mb-2">
+            Disponible
           </span>
         )}
       </div>

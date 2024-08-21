@@ -33,9 +33,9 @@ const AdoptionTips: React.FC = () => {
         <h2 className="text-2xl font-bold mt-6 mb-4">Advertencias</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {warnings.map((warning, index) => (
-            <div key={index} className="bg-gray-800 p-4 rounded-lg shadow-md">
-              <h3 className="text-xl text-white font-semibold mb-2">{index + 1}. {warning.title}</h3>
-              <p className="text-gray-300">{warning.description}</p>
+            <div key={index} className="bg-gray-300 p-4 rounded-lg shadow-md">
+              <h3 className="text-xl font-semibold mb-2">{index + 1}. {warning.title}</h3>
+              <p className="text-gray-700">{warning.description}</p>
             </div>
           ))}
         </div>
