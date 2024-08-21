@@ -1,9 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import Slider from 'react-slick';
-import AnimalCard, { Pet } from './AnimalCard';
-import petData from '../JSON/pet.json';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import React, { useEffect, useState } from "react";
+import Slider from "react-slick";
+import AnimalCard, { Pet } from "./AnimalCard";
+import petData from "../JSON/pet.json";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+// Componente para la flecha anterior
+const CustomArrow = (props: any) => {
+  const { className, style, onClick } = props;
+  return (
+    <button
+      className={className}
+      style={{ ...style, display: "block", background: "#374151", borderRadius: "50%" }}
+      onClick={onClick}
+    >
+      {/* Puedes agregar un icono aquí */}
+      {props.type === "prev" ? "<" : ">"}
+    </button>
+  );
+};
 
 const Destacados: React.FC = () => {
   const [pets, setPets] = useState<Pet[]>([]);
@@ -12,7 +27,9 @@ const Destacados: React.FC = () => {
     // Filtrar los datos para obtener solo los animales disponibles y que han sido publicados hace un tiempo
     const filterPets = petData.filter((pet) => {
       const isAvailable = pet.available;
-      const isOldEnough = new Date().getTime() - new Date(pet.created_at).getTime() > 30 * 24 * 60 * 60 * 1000; // Más de 30 días
+      const isOldEnough =
+        new Date().getTime() - new Date(pet.created_at).getTime() >
+        30 * 24 * 60 * 60 * 1000; // Más de 30 días
       return isAvailable && isOldEnough;
     });
     setPets(filterPets);
@@ -23,23 +40,25 @@ const Destacados: React.FC = () => {
     infinite: true,
     speed: 500,
     slidesToShow: 3, // Muestra 3 tarjetas al mismo tiempo
-    slidesToScroll: 1, // Desliza una tarjeta a la vez
+    slidesToScroll: 3, // Desliza una tarjeta a la vez
+    nextArrow: <CustomArrow type="next" />,
+    prevArrow: <CustomArrow type="prev" />,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
-        }
+        },
       },
       {
         breakpoint: 600,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-        }
-      }
-    ]
+        },
+      },
+    ],
   };
 
   return (

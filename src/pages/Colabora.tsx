@@ -44,7 +44,7 @@ const Contacto: React.FC = () => {
           Contáctanos
         </h2>
         <p className="text-lg text-gray-600 mb-6 text-center">
-          Si tienes preguntas, sugerencias, o simplemente quieres colaborar, no dudes en ponerte en contacto con nosotros. Aquí tienes algunas formas en las que puedes ayudar:
+          Si tienes preguntas, sugerencias, o simplemente quieres colaborar, no dudes en ponerte en contacto con nosotros. Rellena el formulario con tu información de contacto y tu mensaje y nos pondremos en contacto contigo lo antes posible.
         </p>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
