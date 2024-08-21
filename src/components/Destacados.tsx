@@ -9,8 +9,13 @@ const Destacados: React.FC = () => {
   const [pets, setPets] = useState<Pet[]>([]);
 
   useEffect(() => {
-    // Cargar los datos desde pet.json
-    setPets(petData);
+    // Filtrar los datos para obtener solo los animales disponibles y que han sido publicados hace un tiempo
+    const filterPets = petData.filter((pet) => {
+      const isAvailable = pet.available;
+      const isOldEnough = new Date().getTime() - new Date(pet.created_at).getTime() > 30 * 24 * 60 * 60 * 1000; // Más de 30 días
+      return isAvailable && isOldEnough;
+    });
+    setPets(filterPets);
   }, []);
 
   const settings = {
