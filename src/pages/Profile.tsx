@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Link } from 'react-router-dom';
+import ConfirmDialog from '../components/ConfirmDialog';
+import { useNavigate } from 'react-router-dom';
 
 interface State {
   stateId: number;
@@ -18,34 +20,38 @@ const Profile: React.FC = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const [formState, setFormState] = useState(() => {
-    if (userData && typeof userData.city !== 'string') {
-      const cityData = userData.city as City; // Forzar el tipo aquí
-      return {
-        confirmPassword: "",
-        email: userData.email || "",
-        address: userData.address || "",
-        city: cityData.name.toString() || "", // Nombre de la ciudad
-        state: cityData.state.stateId.toString() || "", // ID del estado
-        postalCode: userData.postalCode?.toString() || "",
-        phoneNumber: userData.phoneNumber || "",
-      };
-    } else {
-      return {
-        confirmPassword: "",
-        email: userData?.email || "",
-        address: userData?.address || "",
-        city: "",
-        state: "",
-        postalCode: userData?.postalCode?.toString() || "",
-        phoneNumber: userData?.phoneNumber || "",
-      };
-    }
+    const cityData = userData?.city && typeof userData.city !== 'string' ? userData.city as City : null;
+
+    return {
+      confirmPassword: "",
+      email: userData?.email || "", // Maneja email
+      address: userData?.address || "", // Maneja address que puede ser null
+      city: cityData?.name?.toString() || "", // Maneja city que puede ser null
+      state: cityData?.state?.stateId?.toString() || "", // Maneja state que puede ser null
+      postalCode: userData?.postalCode?.toString() || "", // Maneja postalCode que puede ser null
+      phoneNumber: userData?.phoneNumber || "", // Maneja phoneNumber que puede ser null
+    };
   });
 
   const [states, setStates] = useState<State[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [filteredCities, setFilteredCities] = useState<City[]>([]);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState('');
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogAction, setDialogAction] = useState<() => void>(() => { });
+  const navigate = useNavigate();
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const handleDialogConfirm = () => {
+    dialogAction();
+    setDialogOpen(false);
+  };
 
   useEffect(() => {
     const fetchStatesAndCities = async () => {
@@ -87,14 +93,14 @@ const Profile: React.FC = () => {
         ...prevState,
         email: userData.email || "",
         address: userData.address || "",
-        city: cityData.cityId?.toString() || "",
-        state: cityData.state.stateId?.toString() || "",
+        city: cityData?.cityId?.toString() || "", // Asegúrate de que cityId existe
+        state: cityData?.state?.stateId?.toString() || "", // Asegúrate de que state existe
         postalCode: userData.postalCode?.toString() || "",
         phoneNumber: userData.phoneNumber || "",
       }));
 
       const filtered = cities.filter(
-        (city) => city.state.stateId === cityData.state.stateId
+        (city) => city.state.stateId === cityData?.state?.stateId
       );
       setFilteredCities(filtered);
     }
@@ -228,19 +234,33 @@ const Profile: React.FC = () => {
           const updatedUserData = await updatedDataResponse.json();
 
           localStorage.setItem("userData", JSON.stringify(updatedUserData));
-          login(updatedUserData);
+          login(updatedUserData, token);
 
-          alert("Perfil actualizado exitosamente");
+          setDialogTitle('Perfil Actualizado');
+          setDialogMessage('Perfil actualizado exitosamente.');
+          setDialogAction(() => () => window.location.reload());
+          setDialogOpen(true);
         } else {
-          alert("Error al obtener los datos actualizados.");
+          // Configurar el diálogo para el error al obtener los datos actualizados
+          setDialogTitle('Error');
+          setDialogMessage('Error al obtener los datos actualizados.');
+          setDialogAction(() => () => navigate('/'));
+          setDialogOpen(true);
         }
       } else {
         const errorText = await response.text();
-        alert(`Error al actualizar el perfil: ${errorText}`);
+        setDialogTitle('Error');
+        setDialogMessage(`Error al actualizar el perfil: ${errorText}`);
+        setDialogAction(() => () => window.location.reload());
+        setDialogAction(() => () => navigate('/'));
+        setDialogOpen(true);
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Ocurrió un error al actualizar el perfil.");
+      setDialogTitle('Error');
+      setDialogMessage(`Ocurrió un error al actualizar el perfil: ${error}`);
+      setDialogAction(() => () => navigate('/'));
+      setDialogOpen(true);
     }
   };
 
@@ -378,6 +398,16 @@ const Profile: React.FC = () => {
             </button>
           </form>
         </div>
+      </div>
+      <div className="container mx-auto p-6">
+        <ConfirmDialog
+          open={dialogOpen}
+          title={dialogTitle}
+          message={dialogMessage}
+          isError={dialogTitle === 'Error'}
+          onClose={handleDialogClose}
+          onConfirm={handleDialogConfirm}
+        />
       </div>
     </div>
   );

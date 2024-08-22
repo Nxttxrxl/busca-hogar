@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import ConfirmDialog from "../components/ConfirmDialog"; // Ajusta la ruta según la ubicación de tu componente
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -6,11 +8,20 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
+  const [dialogTitle, setDialogTitle] = useState("");
+  const [dialogAction, setDialogAction] = useState<() => void>(() => {});
+
+  const navigate = useNavigate();
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Las contraseñas no coinciden");
+      setDialogTitle("Error");
+      setDialogMessage("Las contraseñas no coinciden");
+      setDialogOpen(true);
       return;
     }
 
@@ -34,20 +45,28 @@ const Register: React.FC = () => {
         method: "POST",
         body: formData,
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.ok) {
-        alert("Usuario registrado exitosamente");
-        window.location.href = "/";
+        setDialogTitle("Registro Exitoso");
+        setDialogMessage("Usuario registrado exitosamente.");
+        setDialogAction(() => () => navigate("/login")); // Redirige al login
+        setDialogOpen(true);
       } else {
         const errorText = await response.text();
-        alert("Error en el registro: " + errorText);
+        setDialogTitle("Error");
+        setDialogMessage("Error en el registro: " + errorText);
+        setDialogAction(() => () => window.location.reload());
+        setDialogOpen(true);
       }
     } catch (error) {
       console.error("Error en el registro:", error);
-      alert("Ocurrió un error al registrar el usuario.");
+      setDialogTitle("Error");
+      setDialogMessage("Ocurrió un error al registrar el usuario.");
+      setDialogAction(() => () => window.location.reload());
+      setDialogOpen(true);
     }
   };
 
@@ -102,6 +121,18 @@ const Register: React.FC = () => {
           Registrarse
         </button>
       </form>
+
+      {/* Dialogo de confirmación */}
+      <ConfirmDialog
+        open={dialogOpen}
+        title={dialogTitle}
+        message={dialogMessage}
+        onClose={() => setDialogOpen(false)}
+        onConfirm={() => {
+          dialogAction();
+          setDialogOpen(false);
+        }}
+      />
     </div>
   );
 };
