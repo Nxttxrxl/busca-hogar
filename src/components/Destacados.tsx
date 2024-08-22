@@ -5,7 +5,7 @@ import petData from "../JSON/pet.json";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-// Componente para la flecha anterior
+
 const CustomArrow = (props: any) => {
   const { className, style, onClick } = props;
   return (
@@ -14,7 +14,7 @@ const CustomArrow = (props: any) => {
       style={{ ...style, display: "block", background: "#374151", borderRadius: "50%" }}
       onClick={onClick}
     >
-      {/* Puedes agregar un icono aquí */}
+      
       {props.type === "prev" ? "<" : ">"}
     </button>
   );
@@ -39,8 +39,8 @@ const Destacados: React.FC = () => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 3, // Muestra 3 tarjetas al mismo tiempo
-    slidesToScroll: 3, // Desliza una tarjeta a la vez
+    slidesToShow: 3, 
+    slidesToScroll: 3, 
     nextArrow: <CustomArrow type="next" />,
     prevArrow: <CustomArrow type="prev" />,
     responsive: [

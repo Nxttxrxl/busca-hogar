@@ -1,7 +1,8 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import AnimalCard from '../components/AnimalCard';
-import petData from '../JSON/pet.json'; // Asegúrate de que esta ruta sea correcta
+import petData from '../JSON/pet.json';
+import petData from '../JSON/adoption_centers.json'; // Asegúrate de que esta ruta sea correcta
 
 interface Pet {
   pet_id: number;
