@@ -1,50 +1,56 @@
 import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import ConfirmDialog from '../components/ConfirmDialog';
+import { useNavigate } from "react-router-dom";
 
 const ResetPassword: React.FC = () => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState('');
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogAction, setDialogAction] = useState<() => void>(() => { });
+
+  const { token, userData } = useAuth();
+  const navigate = useNavigate();
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const handleDialogConfirm = () => {
+    dialogAction();
+    setDialogOpen(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMessage('');
-    setError('');
 
     if (newPassword !== confirmPassword) {
-      setError('Las contraseñas no coinciden.');
+      setDialogTitle('Error');
+      setDialogMessage('Las contraseñas no coinciden.');
+      setDialogOpen(true);
       return;
     }
 
     try {
-      // Obtener el token de autenticación
-      const tokenResponse = await fetch("http://localhost:8080/api/auth/token", {
-        method: "GET",
-      });
-
-      if (!tokenResponse.ok) {
-        throw new Error("Error al obtener el token");
+      if (!userData || !token) {
+        throw new Error('Usuario no autenticado');
       }
 
-      const token = await tokenResponse.text();
-
-      // Obtener el userId desde localStorage
-      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-      const userId = userData.userId;
-
-      if (!userId) {
-        throw new Error("Usuario no autenticado");
-      }
-
-      // Enviar solicitud para cambiar la contraseña
       const response = await fetch('http://localhost:8080/api/auth/change-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ userId, oldPassword, newPassword }),
+        body: JSON.stringify({
+          userId: userData.userId,
+          oldPassword,
+          newPassword,
+        }),
       });
 
       if (!response.ok) {
@@ -52,9 +58,15 @@ const ResetPassword: React.FC = () => {
       }
 
       const data = await response.text();
-      setMessage(data || 'Contraseña actualizada con éxito.');
+      setDialogTitle('Éxito');
+      setDialogMessage(data || 'Contraseña actualizada con éxito.');
+      setDialogAction(() => () => navigate("/login"));
+      setDialogOpen(true);
     } catch (err) {
-      setError('Error al cambiar la contraseña.');
+      console.error('Error:', err);
+      setDialogTitle('Error');
+      setDialogMessage('Error al cambiar la contraseña.');
+      setDialogOpen(true);
     }
   };
 
@@ -99,8 +111,16 @@ const ResetPassword: React.FC = () => {
           Cambiar Contraseña
         </button>
       </form>
-      {message && <p className="mt-4 text-green-600 text-center">{message}</p>}
-      {error && <p className="mt-4 text-red-600 text-center">{error}</p>}
+
+      {/* Diálogo de confirmación */}
+      <ConfirmDialog
+        open={dialogOpen}
+        title={dialogTitle}
+        message={dialogMessage}
+        isError={dialogTitle === 'Error'}
+        onClose={handleDialogClose}
+        onConfirm={handleDialogConfirm}
+      />
     </div>
   );
 };

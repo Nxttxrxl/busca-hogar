@@ -16,7 +16,8 @@ interface UserData {
 // Define la interfaz del contexto
 interface AuthContextType {
     userData: UserData | null;
-    login: (data: UserData) => void;
+    token: string | null;
+    login: (data: UserData, token: string) => void;
     logout: () => void;
 }
 
@@ -35,35 +36,51 @@ export const useAuth = () => {
 // Proveedor de contexto
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [userData, setUserData] = useState<UserData | null>(null);
+    const [token, setToken] = useState<string | null>(null); // Añadir estado para el token
 
     useEffect(() => {
-        // Cargar los datos del usuario desde localStorage cuando la aplicación se inicia
         const storedUserData = localStorage.getItem("userData");
-        if (storedUserData) {
+        const storedToken = localStorage.getItem("token");
+        const expirationTime = localStorage.getItem("expirationTime");
+
+        if (expirationTime && new Date().getTime() > parseInt(expirationTime, 10)) {
+            // Si la hora actual es mayor que la de expiración, borra los datos
+            localStorage.removeItem("userData");
+            localStorage.removeItem("token");
+            localStorage.removeItem("expirationTime");
+            setUserData(null);
+            setToken(null);
+        } else if (storedUserData && storedToken) {
             try {
                 const parsedData: UserData = JSON.parse(storedUserData);
                 setUserData(parsedData);
+                setToken(storedToken);
             } catch (error) {
-                console.error("Error parsing user data from localStorage", error);
+                console.error("Error parsing user data or token from localStorage", error);
             }
         }
     }, []);
 
-    const login = (data: UserData) => {
-        // Almacena los datos del usuario en localStorage
+    const login = (data: UserData, token: string) => {
+        const expirationTime = new Date().getTime() + 86400000; // 24 horas en milisegundos
         localStorage.setItem("userData", JSON.stringify(data));
+        localStorage.setItem("token", token);
+        localStorage.setItem("expirationTime", expirationTime.toString()); // Guarda la hora de expiración
         setUserData(data);
+        setToken(token);
     };
 
     const logout = () => {
-        // Elimina los datos del usuario de localStorage
         localStorage.removeItem("userData");
+        localStorage.removeItem("token");
+        localStorage.removeItem("expirationTime");
         setUserData(null);
-        window.location.href = "/";
+        setToken(null); 
+        window.location.href = "/"; 
     };
 
     return (
-        <AuthContext.Provider value={{ userData, login, logout }}>
+        <AuthContext.Provider value={{ userData, token, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

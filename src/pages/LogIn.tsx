@@ -35,7 +35,7 @@ const LogIn: React.FC = () => {
         const userResponse = await fetch(`http://localhost:8080/protected/api/users/${userId}`, {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, // Aquí se utiliza el token para la solicitud protegida
             "Content-Type": "application/json",
           },
         });
@@ -47,7 +47,7 @@ const LogIn: React.FC = () => {
         const userData = await userResponse.json();
 
         // Usa la función login del contexto para almacenar los datos del usuario y el token
-        login(userData);
+        login(userData, token); // Aquí pasamos el token junto con los datos del usuario
 
         // La navegación se maneja aquí
         navigate("/"); // Redirige a la página principal
